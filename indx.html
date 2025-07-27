@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شبیه‌ساز کریتور محتوا - آپارات</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            direction: rtl;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            animation: slideDown 0.6s ease;
+        }
+
+        .channel-info {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .channel-details h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .channel-slogan {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            animation: countUp 0.5s ease;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Content Panels */
+        .content-panel {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-panel.active {
+            display: block;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        /* Video Creation */
+        .video-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .form-input {
+            padding: 15px;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4ecdc4;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .category-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .category-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .category-btn.selected {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+        }
+
+        .trending-indicator {
+            display: inline-block;
+            background: #f39c12;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Progress Bars */
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #ecf0f1;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            transition: width 0.5s ease;
+            border-radius: 6px;
+        }
+
+        /* Events and Notifications */
+        .events-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .event {
+            background: #f8f9fa;
+            border-right: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            animation: slideInRight 0.5s ease;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .event:hover {
+            transform: translateX(-5px);
+        }
+
+        .event.positive {
+            border-right-color: #4ecdc4;
+            background: linear-gradient(90deg, #e8f8f5, #f8f9fa);
+        }
+
+        .event.negative {
+            border-right-color: #ff6b6b;
+            background: linear-gradient(90deg, #fdf2f2, #f8f9fa);
+        }
+
+        .event.collaboration {
+            border-right-color: #f39c12;
+            background: linear-gradient(90deg, #fef9e7, #f8f9fa);
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: scaleIn 0.3s ease;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            justify-content: center;
+        }
+
+        /* Shop */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .shop-item {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .shop-item:hover {
+            border-color: #4ecdc4;
+            transform: translateY(-5px);
+        }
+
+        .shop-item.owned {
+            background: linear-gradient(135deg, #e8f8f5, #f8f9fa);
+            border-color: #4ecdc4;
+        }
+
+        /* Analytics */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .chart-container {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            gap: 10px;
+        }
+
+        .chart-label {
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .chart-fill {
+            height: 20px;
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        /* Achievements */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .achievement {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .achievement.unlocked {
+            background: linear-gradient(135deg, #fef9e7, #f8f9fa);
+            border: 2px solid #f39c12;
+        }
+
+        .achievement-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        /* Settings */
+        .settings-group {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #bdc3c7;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #4ecdc4;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(-30px);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            color: white;
+            font-size: 1rem;
+            margin-top: 40px;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes countUp {
+            from { transform: scale(0.8); }
+            to { transform: scale(1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .channel-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-tabs {
+                overflow-x: auto;
+            }
+
+            .modal-content {
+                padding: 25px;
+            }
+
+            .modal-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Dark Theme */
+        body.dark-theme {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        }
+
+        body.dark-theme .header,
+        body.dark-theme .panel {
+            background: rgba(52, 73, 94, 0.95);
+            color: #ecf0f1;
+        }
+
+        body.dark-theme .nav-tabs {
+            background: rgba(52, 73, 94, 0.9);
+        }
+
+        body.dark-theme .form-input {
+            background: rgba(52, 73, 94, 0.8);
+            color: #ecf0f1;
+            border-color: #7f8c8d;
+        }
+
+        body.dark-theme .event {
+            background: rgba(52, 73, 94, 0.8);
+            color: #ecf0f1;
+        }
+
+        body.dark-theme .shop-item,
+        body.dark-theme .achievement,
+        body.dark-theme .settings-group,
+        body.dark-theme .chart-container {
+            background: rgba(52, 73, 94, 0.8);
+            color: #ecf0f1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="channel-info">
+                <div class="avatar" id="channelAvatar">کم</div>
+                <div class="channel-details">
+                    <h1 id="channelName">کانال من</h1>
+                    <p class="channel-slogan" id="channelSlogan">در حال ساخت محتوای جذاب</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card" onclick="showStatsDetail('subscribers')">
+                    <div class="stat-number" id="subscribers">0</div>
+                    <div>مشترک</div>
+                </div>
+                <div class="stat-card" onclick="showStatsDetail('views')">
+                    <div class="stat-number" id="totalViews">0</div>
+                    <div>بازدید کل</div>
+                </div>
+                <div class="stat-card" onclick="showStatsDetail('likes')">
+                    <div class="stat-number" id="totalLikes">0</div>
+                    <div>لایک کل</div>
+                </div>
+                <div class="stat-card" onclick="showStatsDetail('income')">
+                    <div class="stat-number" id="totalIncome">0</div>
+                    <div>درآمد (تومان)</div>
+                </div>
+                <div class="stat-card" onclick="showStatsDetail('reputation')">
+                    <div class="stat-number" id="reputation">50</div>
+                    <div>اعتبار</div>
+                </div>
+                <div class="stat-card" onclick="showStatsDetail('videos')">
+                    <div class="stat-number" id="videoCount">0</div>
+                    <div>ویدیو</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showPanel('create')">ساخت ویدیو</button>
+            <button class="nav-tab" onclick="showPanel('analytics')">آمار</button>
+            <button class="nav-tab" onclick="showPanel('shop')">فروشگاه</button>
+            <button class="nav-tab" onclick="showPanel('inbox')">پیام‌ها</button>
+            <button class="nav-tab" onclick="showPanel('achievements')">دستاوردها</button>
+            <button class="nav-tab" onclick="showPanel('live')">پخش زنده</button>
+            <button class="nav-tab" onclick="showPanel('history')">تاریخچه</button>
+            <button class="nav-tab" onclick="showPanel('settings')">تنظیمات</button>
+        </div>
+
+        <!-- Create Video Panel -->
+        <div class="content-panel active" id="create-panel">
+            <div class="panel">
+                <h2>ساخت ویدیو جدید</h2>
+                <div class="video-form">
+                    <div class="form-group">
+                        <label>عنوان ویدیو:</label>
+                        <input type="text" class="form-input" id="videoTitle" placeholder="عنوان جذاب برای ویدیو خود وارد کنید">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>دسته‌بندی:</label>
+                        <div class="category-grid" id="categoryGrid">
+                            <!-- Categories will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>توضیحات:</label>
+                        <textarea class="form-input" id="videoDescription" rows="4" placeholder="توضیحات ویدیو خود را بنویسید"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>زمان انتشار:</label>
+                        <select class="form-input" id="publishTime">
+                            <option value="now">همین الان</option>
+                            <option value="1h">۱ ساعت بعد</option>
+                            <option value="6h">۶ ساعت بعد</option>
+                            <option value="24h">۲۴ ساعت بعد</option>
+                        </select>
+                    </div>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="uploadProgress"></div>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="createVideoBtn" onclick="createVideo()">ساخت ویدیو</button>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <h2>رویدادها و اخبار</h2>
+                <div class="events-container" id="eventsContainer">
+                    <div class="event">
+                        به شبیه‌ساز کریتور محتوا خوش آمدید! اولین ویدیو خود را بسازید.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Panel -->
+        <div class="content-panel" id="analytics-panel">
+            <div class="panel">
+                <h2>آمار و تحلیل</h2>
+                <div class="analytics-grid">
+                    <div class="chart-container">
+                        <h3>رشد مشترکین</h3>
+                        <div id="subscribersChart"></div>
+                    </div>
+                    <div class="chart-container">
+                        <h3>بازدید ویدیوها</h3>
+                        <div id="viewsChart"></div>
+                    </div>
+                    <div class="chart-container">
+                        <h3>درآمد ماهانه</h3>
+                        <div id="incomeChart"></div>
+                    </div>
+                    <div class="chart-container">
+                        <h3>محبوبیت دسته‌بندی‌ها</h3>
+                        <div id="categoryChart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shop Panel -->
+        <div class="content-panel" id="shop-panel">
+            <div class="panel">
+                <h2>فروشگاه تجهیزات</h2>
+                <div class="shop-grid" id="shopGrid">
+                    <!-- Shop items will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Inbox Panel -->
+        <div class="content-panel" id="inbox-panel">
+            <div class="panel">
+                <h2>صندوق پیام</h2>
+                <div class="events-container" id="inboxContainer">
+                    <!-- Messages will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievements Panel -->
+        <div class="content-panel" id="achievements-panel">
+            <div class="panel">
+                <h2>دستاوردها و نشان‌ها</h2>
+                <div class="achievements-grid" id="achievementsGrid">
+                    <!-- Achievements will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Panel -->
+        <div class="content-panel" id="live-panel">
+            <div class="panel">
+                <h2>پخش زنده</h2>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div id="liveStatus" style="font-size: 1.2rem; margin-bottom: 15px;">آماده برای پخش زنده</div>
+                    <button class="btn btn-primary" id="liveBtn" onclick="startLiveStream()">شروع پخش زنده</button>
+                </div>
+                <div id="liveChat" style="display: none;">
+                    <h3>چت زنده</h3>
+                    <div class="events-container" id="liveChatContainer" style="height: 300px;">
+                        <!-- Live chat messages will appear here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Panel -->
+        <div class="content-panel" id="history-panel">
+            <div class="panel">
+                <h2>تاریخچه ویدیوها</h2>
+                <div id="videoHistory">
+                    <!-- Video history will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Panel -->
+        <div class="content-panel" id="settings-panel">
+            <div class="panel">
+                <h2>تنظیمات</h2>
+                
+                <div class="settings-group">
+                    <h3>تنظیمات نمایش</h3>
+                    <div class="settings-row">
+                        <span>حالت تاریک</span>
+                        <div class="toggle-switch" id="darkModeToggle" onclick="toggleDarkMode()">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                    <div class="settings-row">
+                        <span>انیمیشن‌ها</span>
+                        <div class="toggle-switch active" id="animationsToggle" onclick="toggleAnimations()">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <h3>تنظیمات کانال</h3>
+                    <div class="form-group">
+                        <label>نام کانال:</label>
+                        <input type="text" class="form-input" id="channelNameInput" placeholder="نام کانال">
+                    </div>
+                    <div class="form-group">
+                        <label>شعار کانال:</label>
+                        <input type="text" class="form-input" id="channelSloganInput" placeholder="شعار کانال">
+                    </div>
+                    <button class="btn btn-secondary" onclick="updateChannelInfo()">به‌روزرسانی</button>
+                </div>
+                
+                <div class="settings-group">
+                    <h3>مدیریت داده‌ها</h3>
+                    <button class="btn btn-secondary" onclick="exportData()">خروجی داده‌ها</button>
+                    <button class="btn btn-danger" onclick="resetProgress()">بازنشانی پیشرفت</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal" id="gameModal">
+            <div class="modal-content">
+                <h3 id="modalTitle"></h3>
+                <p id="modalText"></p>
+                <div class="modal-buttons" id="modalButtons">
+                    <!-- Modal buttons will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            ساخته شده توسط محمد حسین
+        </div>
+    </div>
+
+    <script>
+        // Game State Management
+        class ContentCreatorGame {
+            constructor() {
+                this.gameState = {
+                    stats: {
+                        subscribers: 0,
+                        totalViews: 0,
+                        totalLikes: 0,
+                        totalIncome: 0,
+                        reputation: 50,
+                        videoCount: 0
+                    },
+                    channel: {
+                        name: 'کانال من',
+                        slogan: 'در حال ساخت محتوای جذاب',
+                        avatar: 'کم'
+                    },
+                    equipment: {},
+                    achievements: {},
+                    videoHistory: [],
+                    inbox: [],
+                    settings: {
+                        darkMode: false,
+                        animations: true
+                    },
+                    trendingCategories: [],
+                    scheduledVideos: []
+                };
+
+                this.categories = {
+                    'gaming': 'بازی',
+                    'cooking': 'آشپزی',
+                    'tech': 'تکنولوژی',
+                    'comedy': 'کمدی',
+                    'education': 'آموزشی',
+                    'music': 'موسیقی',
+                    'sports': 'ورزش',
+                    'news': 'اخبار',
+                    'lifestyle': 'سبک زندگی',
+                    'travel': 'سفر'
+                };
+
+                this.videoTitles = {
+                    gaming: [
+                        'بهترین بازی‌های ۲۰۲۴',
+                        'راهنمای کامل بازی فیفا',
+                        'نقد و بررسی بازی جدید',
+                        'چالش بازی با دوستان',
+                        'آموزش حرفه‌ای گیمینگ'
+                    ],
+                    cooking: [
+                        'طرز تهیه کباب کوبیده',
+                        'دسر خوشمزه در ۱۰ دقیقه',
+                        'آشپزی سنتی ایرانی',
+                        'نکات طلایی آشپزی',
+                        'غذای سالم و مقوی'
+                    ],
+                    tech: [
+                        'بررسی گوشی جدید',
+                        'آموزش برنامه‌نویسی',
+                        'ترفندهای کامپیوتر',
+                        'آینده هوش مصنوعی',
+                        'گجت‌های جالب ۲۰۲۴'
+                    ],
+                    comedy: [
+                        'طنز خنده‌دار روز',
+                        'شوخی با دوستان',
+                        'کمدی خانوادگی',
+                        'تقلید از مشاهیر',
+                        'طنز اجتماعی'
+                    ],
+                    education: [
+                        'آموزش ریاضی آسان',
+                        'تاریخ ایران باستان',
+                        'یادگیری زبان انگلیسی',
+                        'علوم تجربی جالب',
+                        'مهارت‌های زندگی'
+                    ],
+                    music: [
+                        'آهنگ محلی زیبا',
+                        'آموزش گیتار مبتدی',
+                        'موسیقی سنتی ایران',
+                        'ترانه‌های قدیمی',
+                        'ساز و آواز'
+                    ],
+                    sports: [
+                        'تمرینات ورزشی خانگی',
+                        'تحلیل بازی پرسپولیس',
+                        'آموزش فوتبال',
+                        'ورزش‌های رزمی',
+                        'تناسب اندام'
+                    ],
+                    news: [
+                        'اخبار فناوری',
+                        'گزارش ویژه',
+                        'تحلیل اقتصادی',
+                        'اخبار ورزشی',
+                        'رویدادهای مهم'
+                    ],
+                    lifestyle: [
+                        'سبک زندگی سالم',
+                        'دکوراسیون خانه',
+                        'مد و پوشاک',
+                        'زیبایی و آرایش',
+                        'روانشناسی'
+                    ],
+                    travel: [
+                        'سفر به شمال ایران',
+                        'جاهای دیدنی اصفهان',
+                        'راهنمای سفر',
+                        'فرهنگ‌های مختلف',
+                        'ماجراجویی'
+                    ]
+                };
+
+                this.shopItems = {
+                    'basic_mic': {
+                        name: 'میکروفون ساده',
+                        price: 50000,
+                        effect: { quality: 10 },
+                        description: 'کیفیت صدا را بهبود می‌بخشد'
+                    },
+                    'pro_mic': {
+                        name: 'میکروفون حرفه‌ای',
+                        price: 200000,
+                        effect: { quality: 25 },
+                        description: 'کیفیت صدای عالی',
+                        requires: 'basic_mic'
+                    },
+                    'hd_camera': {
+                        name: 'دوربین HD',
+                        price: 300000,
+                        effect: { quality: 20 },
+                        description: 'کیفیت تصویر بهتر'
+                    },
+                    '4k_camera': {
+                        name: 'دوربین 4K',
+                        price: 800000,
+                        effect: { quality: 40 },
+                        description: 'کیفیت تصویر فوق‌العاده',
+                        requires: 'hd_camera'
+                    },
+                    'editing_software': {
+                        name: 'نرم‌افزار ادیت',
+                        price: 150000,
+                        effect: { editing: 15 },
+                        description: 'امکانات ادیت بهتر'
+                    },
+                    'pro_editing': {
+                        name: 'ادیت حرفه‌ای',
+                        price: 500000,
+                        effect: { editing: 35 },
+                        description: 'ادیت در سطح حرفه‌ای',
+                        requires: 'editing_software'
+                    }
+                };
+
+                this.achievementsList = {
+                    'first_video': {
+                        name: 'اولین ویدیو',
+                        description: 'اولین ویدیو خود را آپلود کنید',
+                        icon: '🎬',
+                        condition: () => this.gameState.stats.videoCount >= 1
+                    },
+                    '100_subs': {
+                        name: '۱۰۰ مشترک',
+                        description: '۱۰۰ مشترک کسب کنید',
+                        icon: '👥',
+                        condition: () => this.gameState.stats.subscribers >= 100
+                    },
+                    '1k_subs': {
+                        name: '۱ هزار مشترک',
+                        description: '۱ هزار مشترک کسب کنید',
+                        icon: '🏆',
+                        condition: () => this.gameState.stats.subscribers >= 1000
+                    },
+                    '10k_subs': {
+                        name: '۱۰ هزار مشترک',
+                        description: '۱۰ هزار مشترک کسب کنید',
+                        icon: '⭐',
+                        condition: () => this.gameState.stats.subscribers >= 10000
+                    },
+                    'viral_video': {
+                        name: 'ویدیو وایرال',
+                        description: 'ویدیویی با بیش از ۱۰ هزار بازدید',
+                        icon: '🔥',
+                        condition: () => this.gameState.videoHistory.some(v => v.views >= 10000)
+                    },
+                    'millionaire': {
+                        name: 'میلیونر',
+                        description: '۱ میلیون تومان درآمد کسب کنید',
+                        icon: '💰',
+                        condition: () => this.gameState.stats.totalIncome >= 1000000
+                    }
+                };
+
+                this.selectedCategory = null;
+                this.isLiveStreaming = false;
+                this.liveStreamInterval = null;
+
+                this.init();
+            }
+
+            init() {
+                this.loadGameState();
+                this.setupEventListeners();
+                this.updateDisplay();
+                this.populateCategories();
+                this.populateShop();
+                this.populateAchievements();
+                this.startRandomEvents();
+                this.updateTrendingCategories();
+                this.processScheduledVideos();
+                
+                // Auto-save every 30 seconds
+                setInterval(() => this.saveGameState(), 30000);
+            }
+
+            setupEventListeners() {
+                // Category selection
+                document.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('category-btn')) {
+                        document.querySelectorAll('.category-btn').forEach(btn => 
+                            btn.classList.remove('selected'));
+                        e.target.classList.add('selected');
+                        this.selectedCategory = e.target.dataset.category;
+                    }
+                });
+
+                // Auto-suggest video titles
+                document.getElementById('videoTitle').addEventListener('input', (e) => {
+                    if (this.selectedCategory && e.target.value === '') {
+                        const suggestions = this.videoTitles[this.selectedCategory];
+                        if (suggestions) {
+                            e.target.value = suggestions[Math.floor(Math.random() * suggestions.length)];
+                        }
+                    }
+                });
+            }
+
+            populateCategories() {
+                const grid = document.getElementById('categoryGrid');
+                grid.innerHTML = '';
+                
+                Object.entries(this.categories).forEach(([key, name]) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'category-btn';
+                    btn.dataset.category = key;
+                    
+                    let content = name;
+                    if (this.gameState.trendingCategories.includes(key)) {
+                        content = `<span class="trending-indicator">ترند</span>${name}`;
+                    }
+                    
+                    btn.innerHTML = content;
+                    grid.appendChild(btn);
+                });
+            }
+
+            populateShop() {
+                const grid = document.getElementById('shopGrid');
+                grid.innerHTML = '';
+                
+                Object.entries(this.shopItems).forEach(([key, item]) => {
+                    const div = document.createElement('div');
+                    div.className = `shop-item ${this.gameState.equipment[key] ? 'owned' : ''}`;
+                    
+                    const canBuy = !item.requires || this.gameState.equipment[item.requires];
+                    const affordable = this.gameState.stats.totalIncome >= item.price;
+                    
+                    div.innerHTML = `
+                        <h3>${item.name}</h3>
+                        <p>${item.description}</p>
+                        <div style="margin: 15px 0;">
+                            <strong>${this.formatNumber(item.price)} تومان</strong>
+                        </div>
+                        ${this.gameState.equipment[key] ? 
+                            '<button class="btn btn-secondary" disabled>خریداری شده</button>' :
+                            `<button class="btn ${canBuy && affordable ? 'btn-primary' : 'btn-secondary'}" 
+                                ${canBuy && affordable ? `onclick="game.buyItem('${key}')"` : 'disabled'}>
+                                ${!canBuy ? 'نیاز به پیش‌نیاز' : !affordable ? 'بودجه کافی نیست' : 'خرید'}
+                            </button>`
+                        }
+                    `;
+                    
+                    grid.appendChild(div);
+                });
+            }
+
+            populateAchievements() {
+                const grid = document.getElementById('achievementsGrid');
+                grid.innerHTML = '';
+                
+                Object.entries(this.achievementsList).forEach(([key, achievement]) => {
+                    const div = document.createElement('div');
+                    const unlocked = this.gameState.achievements[key] || achievement.condition();
+                    
+                    if (unlocked && !this.gameState.achievements[key]) {
+                        this.gameState.achievements[key] = true;
+                        this.addEvent(`دستاورد جدید: ${achievement.name}`, 'positive');
+                    }
+                    
+                    div.className = `achievement ${unlocked ? 'unlocked' : ''}`;
+                    div.innerHTML = `
+                        <div class="achievement-icon">${achievement.icon}</div>
+                        <h3>${achievement.name}</h3>
+                        <p>${achievement.description}</p>
+                        ${unlocked ? '<div style="color: #4ecdc4; font-weight: bold;">✓ باز شده</div>' : 
+                                   '<div style="color: #bdc3c7;">🔒 قفل</div>'}
+                    `;
+                    
+                    grid.appendChild(div);
+                });
+            }
+
+            createVideo() {
+                const title = document.getElementById('videoTitle').value.trim();
+                const description = document.getElementById('videoDescription').value.trim();
+                const publishTime = document.getElementById('publishTime').value;
+                
+                if (!title || !this.selectedCategory) {
+                    this.showModal('خطا', 'لطفاً عنوان و دسته‌بندی را انتخاب کنید.', [
+                        { text: 'باشه', action: () => this.hideModal() }
+                    ]);
+                    return;
+                }
+                
+                if (publishTime === 'now') {
+                    this.publishVideo(title, this.selectedCategory, description);
+                } else {
+                    this.scheduleVideo(title, this.selectedCategory, description, publishTime);
+                }
+                
+                // Reset form
+                document.getElementById('videoTitle').value = '';
+                document.getElementById('videoDescription').value = '';
+                document.querySelectorAll('.category-btn').forEach(btn => 
+                    btn.classList.remove('selected'));
+                this.selectedCategory = null;
+            }
+
+            publishVideo(title, category, description) {
+                const btn = document.getElementById('createVideoBtn');
+                const progress = document.getElementById('uploadProgress');
+                
+                btn.disabled = true;
+                btn.textContent = 'در حال آپلود...';
+                
+                let progressValue = 0;
+                const interval = setInterval(() => {
+                    progressValue += Math.random() * 15 + 5;
+                    if (progressValue >= 100) {
+                        progressValue = 100;
+                        clearInterval(interval);
+                        this.completeVideoUpload(title, category, description);
+                    }
+                    progress.style.width = progressValue + '%';
+                }, 300);
+            }
+
+            completeVideoUpload(title, category, description) {
+                // Calculate video performance
+                const baseViews = Math.floor(Math.random() * 500) + 100;
+                const trendingBonus = this.gameState.trendingCategories.includes(category) ? 2 : 1;
+                const equipmentBonus = this.calculateEquipmentBonus();
+                const reputationBonus = this.gameState.stats.reputation / 100;
+                
+                const views = Math.floor(baseViews * trendingBonus * equipmentBonus * reputationBonus);
+                const likes = Math.floor(views * (Math.random() * 0.1 + 0.05));
+                const newSubs = Math.floor(likes * (Math.random() * 0.3 + 0.1));
+                const income = Math.floor(views * (Math.random() * 5 + 2));
+                
+                // Update stats
+                this.gameState.stats.videoCount++;
+                this.gameState.stats.totalViews += views;
+                this.gameState.stats.totalLikes += likes;
+                this.gameState.stats.subscribers += newSubs;
+                this.gameState.stats.totalIncome += income;
+                
+                // Add to history
+                const video = {
+                    title,
+                    category,
+                    description,
+                    views,
+                    likes,
+                    income,
+                    date: new Date().toLocaleDateString('fa-IR'),
+                    timestamp: Date.now()
+                };
+                
+                this.gameState.videoHistory.unshift(video);
+                
+                // Add event
+                this.addEvent(`ویدیو "${title}" منتشر شد! ${this.formatNumber(views)} بازدید، ${this.formatNumber(likes)} لایک، ${this.formatNumber(newSubs)} مشترک جدید`, 'positive');
+                
+                // Reset UI
+                document.getElementById('createVideoBtn').disabled = false;
+                document.getElementById('createVideoBtn').textContent = 'ساخت ویدیو';
+                document.getElementById('uploadProgress').style.width = '0%';
+                
+                this.updateDisplay();
+                this.updateVideoHistory();
+                this.saveGameState();
+                
+                // Check for achievements
+                this.populateAchievements();
+            }
+
+            scheduleVideo(title, category, description, delay) {
+                const delayMs = {
+                    '1h': 60 * 60 * 1000,
+                    '6h': 6 * 60 * 60 * 1000,
+                    '24h': 24 * 60 * 60 * 1000
+                }[delay];
+                
+                const scheduledTime = Date.now() + delayMs;
+                
+                this.gameState.scheduledVideos.push({
+                    title,
+                    category,
+                    description,
+                    scheduledTime
+                });
+                
+                this.addEvent(`ویدیو "${title}" برای انتشار زمان‌بندی شد`, 'normal');
+                this.saveGameState();
+            }
+
+            processScheduledVideos() {
+                setInterval(() => {
+                    const now = Date.now();
+                    const readyVideos = this.gameState.scheduledVideos.filter(v => v.scheduledTime <= now);
+                    
+                    readyVideos.forEach(video => {
+                        this.completeVideoUpload(video.title, video.category, video.description);
+                        this.gameState.scheduledVideos = this.gameState.scheduledVideos.filter(v => v !== video);
+                    });
+                    
+                    if (readyVideos.length > 0) {
+                        this.saveGameState();
+                    }
+                }, 60000); // Check every minute
+            }
+
+            calculateEquipmentBonus() {
+                let bonus = 1;
+                Object.entries(this.gameState.equipment).forEach(([key, owned]) => {
+                    if (owned && this.shopItems[key]) {
+                        const effect = this.shopItems[key].effect;
+                        if (effect.quality) bonus += effect.quality / 100;
+                        if (effect.editing) bonus += effect.editing / 100;
+                    }
+                });
+                return bonus;
+            }
+
+            buyItem(itemKey) {
+                const item = this.shopItems[itemKey];
+                if (this.gameState.stats.totalIncome >= item.price) {
+                    this.gameState.stats.totalIncome -= item.price;
+                    this.gameState.equipment[itemKey] = true;
+                    
+                    this.addEvent(`${item.name} خریداری شد!`, 'positive');
+                    this.updateDisplay();
+                    this.populateShop();
+                    this.saveGameState();
+                }
+            }
+
+            startLiveStream() {
+                if (this.isLiveStreaming) {
+                    this.stopLiveStream();
+                    return;
+                }
+                
+                this.isLiveStreaming = true;
+                document.getElementById('liveStatus').textContent = 'در حال پخش زنده...';
+                document.getElementById('liveBtn').textContent = 'پایان پخش';
+                document.getElementById('liveBtn').className = 'btn btn-danger';
+                document.getElementById('liveChat').style.display = 'block';
+                
+                // Simulate live chat
+                this.liveStreamInterval = setInterval(() => {
+                    this.addLiveChatMessage();
+                    
+                    // Random events during live stream
+                    if (Math.random() < 0.1) {
+                        const viewers = Math.floor(Math.random() * 100) + 10;
+                        const newSubs = Math.floor(Math.random() * 5) + 1;
+                        
+                        this.gameState.stats.subscribers += newSubs;
+                        this.gameState.stats.totalViews += viewers;
+                        
+                        this.updateDisplay();
+                    }
+                }, 3000);
+                
+                this.addEvent('پخش زنده شروع شد!', 'positive');
+            }
+
+            stopLiveStream() {
+                this.isLiveStreaming = false;
+                clearInterval(this.liveStreamInterval);
+                
+                document.getElementById('liveStatus').textContent = 'آماده برای پخش زنده';
+                document.getElementById('liveBtn').textContent = 'شروع پخش زنده';
+                document.getElementById('liveBtn').className = 'btn btn-primary';
+                document.getElementById('liveChat').style.display = 'none';
+                
+                // Calculate live stream rewards
+                const duration = Math.floor(Math.random() * 60) + 30; // 30-90 minutes
+                const viewers = Math.floor(Math.random() * 200) + 50;
+                const income = Math.floor(viewers * (Math.random() * 10 + 5));
+                
+                this.gameState.stats.totalIncome += income;
+                this.gameState.stats.totalViews += viewers;
+                
+                this.addEvent(`پخش زنده پایان یافت! ${duration} دقیقه، ${this.formatNumber(viewers)} بیننده، ${this.formatNumber(income)} تومان درآمد`, 'positive');
+                this.updateDisplay();
+                this.saveGameState();
+            }
+
+            addLiveChatMessage() {
+                const messages = [
+                    'سلام! عالی هستید',
+                    'ادامه بدید',
+                    'خیلی جالب بود',
+                    'لایک کردم',
+                    'مشترک شدم',
+                    'عاشق کانالتونم',
+                    'بیشتر از این محتوا بسازید',
+                    'خسته نباشید'
+                ];
+                
+                const message = messages[Math.floor(Math.random() * messages.length)];
+                const username = 'کاربر' + Math.floor(Math.random() * 1000);
+                
+                const chatContainer = document.getElementById('liveChatContainer');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'event positive';
+                messageDiv.innerHTML = `<strong>${username}:</strong> ${message}`;
+                
+                chatContainer.insertBefore(messageDiv, chatContainer.firstChild);
+                
+                // Keep only last 20 messages
+                while (chatContainer.children.length > 20) {
+                    chatContainer.removeChild(chatContainer.lastChild);
+                }
+            }
+
+            updateVideoHistory() {
+                const container = document.getElementById('videoHistory');
+                container.innerHTML = '';
+                
+                if (this.gameState.videoHistory.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #7f8c8d;">هنوز ویدیویی منتشر نکرده‌اید</p>';
+                    return;
+                }
+                
+                this.gameState.videoHistory.forEach(video => {
+                    const div = document.createElement('div');
+                    div.className = 'event';
+                    div.innerHTML = `
+                        <h3>${video.title}</h3>
+                        <p><strong>دسته‌بندی:</strong> ${this.categories[video.category]}</p>
+                        <p><strong>تاریخ:</strong> ${video.date}</p>
+                        <div style="display: flex; gap: 20px; margin-top: 10px;">
+                            <span>👁️ ${this.formatNumber(video.views)}</span>
+                            <span>👍 ${this.formatNumber(video.likes)}</span>
+                            <span>💰 ${this.formatNumber(video.income)} تومان</span>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+
+            updateTrendingCategories() {
+                // Update trending categories every 5 minutes
+                setInterval(() => {
+                    const categories = Object.keys(this.categories);
+                    const trendingCount = Math.floor(Math.random() * 3) + 1;
+                    
+                    this.gameState.trendingCategories = [];
+                    for (let i = 0; i < trendingCount; i++) {
+                        const category = categories[Math.floor(Math.random() * categories.length)];
+                        if (!this.gameState.trendingCategories.includes(category)) {
+                            this.gameState.trendingCategories.push(category);
+                        }
+                    }
+                    
+                    this.populateCategories();
+                    this.addEvent('دسته‌بندی‌های ترند به‌روزرسانی شد!', 'normal');
+                }, 300000);
+            }
+
+            startRandomEvents() {
+                setInterval(() => {
+                    if (this.gameState.stats.videoCount > 0 && Math.random() < 0.3) {
+                        this.triggerRandomEvent();
+                    }
+                }, 20000);
+            }
+
+            triggerRandomEvent() {
+                const events = [
+                    {
+                        type: 'positive',
+                        title: 'ویدیو در ترند!',
+                        text: 'یکی از ویدیوهای شما در صفحه ترند قرار گرفت!',
+                        effect: { subscribers: 100, totalViews: 500, reputation: 5 }
+                    },
+                    {
+                        type: 'negative',
+                        title: 'کامنت‌های منفی',
+                        text: 'ویدیو اخیر شما کامنت‌های منفی زیادی دریافت کرده',
+                        effect: { reputation: -10 }
+                    },
+                    {
+                        type: 'collaboration',
+                        title: 'پیشنهاد همکاری',
+                        text: 'یک برند معروف پیشنهاد همکاری داده. می‌پذیرید؟',
+                        choices: [
+                            { text: 'بله', effect: { totalIncome: 50000, subscribers: 50 } },
+                            { text: 'خیر', effect: { reputation: 5 } }
+                        ]
+                    },
+                    {
+                        type: 'positive',
+                        title: 'اینفلوئنسر مشهور',
+                        text: 'یک اینفلوئنسر مشهور ویدیو شما را به اشتراک گذاشت!',
+                        effect: { subscribers: 200, totalViews: 1000, reputation: 10 }
+                    },
+                    {
+                        type: 'negative',
+                        title: 'تغییر الگوریتم',
+                        text: 'الگوریتم پلتفرم تغییر کرده و بازدیدها کاهش یافته',
+                        effect: { totalViews: -100 }
+                    }
+                ];
+                
+                const event = events[Math.floor(Math.random() * events.length)];
+                
+                if (event.choices) {
+                    this.showModal(event.title, event.text, event.choices.map(choice => ({
+                        text: choice.text,
+                        action: () => {
+                            this.applyEventEffect(choice.effect);
+                            this.hideModal();
+                        }
+                    })));
+                } else {
+                    this.applyEventEffect(event.effect);
+                    this.addEvent(event.text, event.type);
+                }
+            }
+
+            applyEventEffect(effect) {
+                Object.entries(effect).forEach(([key, value]) => {
+                    this.gameState.stats[key] = Math.max(0, this.gameState.stats[key] + value);
+                });
+                this.updateDisplay();
+                this.saveGameState();
+            }
+
+            addEvent(text, type = 'normal') {
+                const container = document.getElementById('eventsContainer');
+                const event = document.createElement('div');
+                event.className = `event ${type}`;
+                event.textContent = text;
+                
+                container.insertBefore(event, container.firstChild);
+                
+                // Keep only last 20 events
+                while (container.children.length > 20) {
+                    container.removeChild(container.lastChild);
+                }
+            }
+
+            showModal(title, text, buttons) {
+                document.getElementById('modalTitle').textContent = title;
+                document.getElementById('modalText').textContent = text;
+                
+                const buttonsContainer = document.getElementById('modalButtons');
+                buttonsContainer.innerHTML = '';
+                
+                buttons.forEach(button => {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn btn-primary';
+                    btn.textContent = button.text;
+                    btn.onclick = button.action;
+                    buttonsContainer.appendChild(btn);
+                });
+                
+                document.getElementById('gameModal').style.display = 'flex';
+            }
+
+            hideModal() {
+                document.getElementById('gameModal').style.display = 'none';
+            }
+
+            updateDisplay() {
+                // Update stats display
+                Object.entries(this.gameState.stats).forEach(([key, value]) => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        element.textContent = this.formatNumber(value);
+                    }
+                });
+                
+                // Update channel info
+                document.getElementById('channelName').textContent = this.gameState.channel.name;
+                document.getElementById('channelSlogan').textContent = this.gameState.channel.slogan;
+                document.getElementById('channelAvatar').textContent = this.gameState.channel.avatar;
+                
+                // Update form inputs
+                document.getElementById('channelNameInput').value = this.gameState.channel.name;
+                document.getElementById('channelSloganInput').value = this.gameState.channel.slogan;
+            }
+
+            formatNumber(num) {
+                if (num >= 1000000) {
+                    return (num / 1000000).toFixed(1) + 'M';
+                } else if (num >= 1000) {
+                    return (num / 1000).toFixed(1) + 'K';
+                }
+                return num.toLocaleString('fa-IR');
+            }
+
+            saveGameState() {
+                localStorage.setItem('contentCreatorGame', JSON.stringify(this.gameState));
+            }
+
+            loadGameState() {
+                const saved = localStorage.getItem('contentCreatorGame');
+                if (saved) {
+                    const loadedState = JSON.parse(saved);
+                    this.gameState = { ...this.gameState, ...loadedState };
+                }
+            }
+
+            resetProgress() {
+                if (confirm('آیا مطمئن هستید که می‌خواهید تمام پیشرفت خود را از دست بدهید؟')) {
+                    localStorage.removeItem('contentCreatorGame');
+                    location.reload();
+                }
+            }
+
+            exportData() {
+                const dataStr = JSON.stringify(this.gameState, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'content-creator-save.json';
+                link.click();
+                
+                URL.revokeObjectURL(url);
+            }
+
+            updateChannelInfo() {
+                this.gameState.channel.name = document.getElementById('channelNameInput').value || 'کانال من';
+                this.gameState.channel.slogan = document.getElementById('channelSloganInput').value || 'در حال ساخت محتوای جذاب';
+                
+                this.updateDisplay();
+                this.saveGameState();
+                
+                this.addEvent('اطلاعات کانال به‌روزرسانی شد', 'positive');
+            }
+
+            toggleDarkMode() {
+                this.gameState.settings.darkMode = !this.gameState.settings.darkMode;
+                document.body.classList.toggle('dark-theme', this.gameState.settings.darkMode);
+                document.getElementById('darkModeToggle').classList.toggle('active', this.gameState.settings.darkMode);
+                this.saveGameState();
+            }
+
+            toggleAnimations() {
+                this.gameState.settings.animations = !this.gameState.settings.animations;
+                document.getElementById('animationsToggle').classList.toggle('active', this.gameState.settings.animations);
+                this.saveGameState();
+            }
+        }
+
+        // Global functions
+        function showPanel(panelName) {
+            // Hide all panels
+            document.querySelectorAll('.content-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            // Show selected panel
+            document.getElementById(panelName + '-panel').classList.add('active');
+            
+            // Update nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update specific panels
+            if (panelName === 'history') {
+                game.updateVideoHistory();
+            }
+        }
+
+        function createVideo() {
+            game.createVideo();
+        }
+
+        function startLiveStream() {
+            game.startLiveStream();
+        }
+
+        function resetProgress() {
+            game.resetProgress();
+        }
+
+        function exportData() {
+            game.exportData();
+        }
+
+        function updateChannelInfo() {
+            game.updateChannelInfo();
+        }
+
+        function toggleDarkMode() {
+            game.toggleDarkMode();
+        }
+
+        function toggleAnimations() {
+            game.toggleAnimations();
+        }
+
+        function showStatsDetail(statType) {
+            // Could implement detailed stats modal here
+            console.log('Show details for:', statType);
+        }
+
+        // Initialize game when page loads
+        let game;
+        document.addEventListener('DOMContentLoaded', () => {
+            game = new ContentCreatorGame();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'965c31268733d25e',t:'MTc1MzYxOTg4Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
